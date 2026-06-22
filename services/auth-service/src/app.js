@@ -12,7 +12,6 @@ const profileRoute = require('./routes/profileRoutes');
 app.use(express.json());
 app.use(cookieParser());
 
-
 app.use("/profile",profileRoute);
 app.use("/",authRoute);
 

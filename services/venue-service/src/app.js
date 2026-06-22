@@ -18,7 +18,8 @@ app.use(express.urlencoded({ extended: true }));
 // app.use("/api/auth/profile",profileRoute);   
 // app.use("/api/auth",authRoute);
 
-app.use("/",venueOwnerAuthRoute);
+app.use("/venueOwner",venueOwnerAuthRoute);
+app.use("/venue",addVenueRoute);
 
 
 
@@ -31,7 +32,7 @@ connectDB()
 
           console.log('mongodb connected...');
           app.listen(PORT, () => {
-          console.log(`Auth service running at port ${PORT}`);
+          console.log(`Venue service running at port ${PORT}`);
      });
            
  })

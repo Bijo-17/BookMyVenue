@@ -147,4 +147,6 @@ const verifyOtp = async (req,res)=>{
 }
 
 
+
+
 module.exports = { signupUser , login, logout , loadOtpPage, verifyOtp }

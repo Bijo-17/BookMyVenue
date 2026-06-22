@@ -5,12 +5,14 @@ const venueSchema = mongoose.Schema({
     ownerId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: "VenueOwner"
+        ref: "VenueOwner",
     },
 
     venueName: {
         type: String,
-        maxLength: 100
+        maxLength: 100,
+        required:true,
+       
     },
 
     venueType: {
@@ -65,8 +67,8 @@ const venueSchema = mongoose.Schema({
     },
 
     location: {
-        latitude,
-        longitude
+        latitude: {type:String},
+        longitude: {type:String}
     },
 
     pricePerHour: {
@@ -130,6 +132,16 @@ const venueSchema = mongoose.Schema({
 
     message: {
         type: String,
+    },
+
+    isDeleted: {
+        type:Boolean,
+        default: false
+    },
+
+    isApproved: {
+        type:Boolean,
+        default: false
     }
 
 },

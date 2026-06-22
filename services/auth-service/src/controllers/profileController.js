@@ -74,5 +74,39 @@ const editPassword = async (req,res)=> {
 
 }
 
+const changeRole = async (req,res)=>{
+     try {
 
-module.exports = { getProfile, editProfile, editEmail, editPassword }
+         const { userId } = req.body;
+
+         const user =  await User.findById( userId);
+
+          if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+         if(!user.role.includes('venueOwner')){
+             await User.findByIdAndUpdate( userId, { $push: {role:'venueOwner'}});
+         } 
+
+        res.status(200).json({
+            success: true,
+            message: 'Role updated',
+            user
+        });
+
+     } catch (error) {
+
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+          console.log(error);
+     }
+}
+
+
+module.exports = { getProfile, editProfile, editEmail, editPassword, changeRole }

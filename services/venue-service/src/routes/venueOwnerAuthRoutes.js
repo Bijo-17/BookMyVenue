@@ -9,8 +9,9 @@ router.get('/', (req, res) => {
     res.send("Venue service Health check... Good");
 })
 
-router.post('/venuOwner/signup',authenticate, authController.registerVenueOwner);
-router.post('/venuOwner/login',authenticate, authController.venuOwnerLogin);
-router.post('/venuOwner/logout',authenticate, authController.venuOwnerLogout);
+// /venueOwner/
+
+router.post('/signup',authenticate, authController.registerVenueOwner);
+router.post('/logout',authenticate, authController.venuOwnerLogout);
 
 module.exports = router;

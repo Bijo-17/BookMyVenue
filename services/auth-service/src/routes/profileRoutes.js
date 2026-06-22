@@ -10,6 +10,8 @@ router.get("/view", authenticate,authorize(ROLES.USER), profileController.getPro
 router.patch("/edit", authenticate,authorize(ROLES.USER), profileController.editProfile);
 router.patch("/editEmail",authenticate,authorize(ROLES.USER), profileController.editEmail);
 router.patch("/editPassword",authenticate,authorize(ROLES.USER), profileController.editPassword);
+console.log('routerCAlled');
+router.patch("/changeRole",profileController.changeRole);
 
 
 module.exports = router;

@@ -39,7 +39,11 @@ const venuOwnerSchema = mongoose.Schema({
    status          :   {
                         type: String,   
                         maxLength : 40              
-                       }
+                       },
+   isDeleted       :   {
+                          type:Boolean,
+                          default: false
+                       }                     
 
 },
  { timestamps: true}

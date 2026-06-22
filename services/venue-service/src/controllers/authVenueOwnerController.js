@@ -1,20 +1,28 @@
 
-const { validateSignup } = require("../util/validator");
-const VenuOwner = require('../models/venuOwners');
+const { validateSignup } = require("../utils/validator");
+const VenueOwner = require('../models/venuOwners');
 const User = require('../../../auth-service/src/models/user');
+const axios = require('axios');
+const BASE_URL = require('../utils/constants');
 
 const registerVenueOwner = async (req, res) => {
     try {
 
         await validateSignup(req);
 
-        const { organizationName,
+     const { organizationName,
             businessEmail,
             businessPhone,
             description,
             status } = req.body;
 
-        await new VenuOwner({
+      const existingVenueOwner = await VenueOwner.findOne({ businessEmail: businessEmail });
+
+      if(existingVenueOwner){
+        return res.status(400).send('Email address already exists!');
+      }
+      
+      const venueOwner =  await new VenueOwner({
 
             userId: req.user.userId,
             organizationName,
@@ -22,57 +30,30 @@ const registerVenueOwner = async (req, res) => {
             businessPhone,
             description
 
-        }).save();
+        });
 
-        res.send('successfully register as a Venue Owner');
+         const response = await axios.patch(
+              'http://localhost:3001/profile/changeRole',
+              { userId: req.user.userId},
+
+         );
+
+
+         if(response.data.success){
+             await venueOwner.save();
+             res.send('successfully register as a Venue Owner');
+         } else {
+             res.status(400).send('ERRORedd: '+response.message);
+         }
+      
 
     } catch (error) {
 
-        res.status(400).send('ERROR Registering as venu owner: ' + error.message);
+        res.status(400).send('ERROR Registering as venu owner: ' + error);
 
     }
 }
 
-const venuOwnerLogin = async (req, res) => {
-    try {
-
-        const { email, password } = req.body;
-
-        const user = await User.findOne({ email: email });
-
-        if (!user) {
-
-            throw new Error('Invalid credentials');
-
-        }
-
-        const isPasswordValid = await user.validatePassword(password);
-
-        if (!isPasswordValid) {
-
-            throw new Error('Invalid  credentials');
-
-        } else {
-
-            // autenticate;
-
-            if (user.role !== 'venuOwner') {
-
-                return res.status(403).send('Access Denied');
-
-            }
-
-            const token = await user.getJWT();
-
-            res.cookie('token', token, { maxAge: 7 * 24 * 60 * 60 * 1000 });
-            res.send('login sucesfull!');
-
-        }
-
-    } catch (error) {
-        res.status(400).send("Error: "+error.message);
-    }
-}
 
 const venuOwnerLogout = (req, res) => {
 
@@ -85,4 +66,4 @@ const venuOwnerLogout = (req, res) => {
 
 }
 
-module.exports = { registerVenueOwner, venuOwnerLogin, venuOwnerLogout }
+module.exports = { registerVenueOwner, venuOwnerLogout }

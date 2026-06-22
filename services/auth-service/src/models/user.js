@@ -20,10 +20,10 @@ const userSchema = mongoose.Schema({
                 },
      location:  { type: String, trim: true, maxLength:50},
      phoneNumber: { type: Number , minLength:10, maxLength:10 },
-     role:      { type :    String , 
+     role:      [{ type :    String , 
                    Enum:    ['user','admin','venuOwner'], 
                    default: 'user'
-                 }
+                 }]
 
 },
      { timestamps: true });

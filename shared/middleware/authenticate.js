@@ -5,7 +5,7 @@ const User = require('../../services/auth-service/src/models/user');
 
 const  authenticate = async (req,res,next)=>{
      try {
- 
+
          const {token} = req.cookies;
 
          if(!token){
