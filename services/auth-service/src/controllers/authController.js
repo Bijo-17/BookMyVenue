@@ -53,7 +53,7 @@ const signupUser = async (req, res) => {
 
 const login = async (req, res) => {
      try {
-        
+     
           const { email, password } = req.body;
           const user = await User.findOne({ email: email });
 
@@ -74,7 +74,7 @@ const login = async (req, res) => {
              const token = await user.getJWT();
 
              res.cookie('token',token , { maxAge : 7 * 24 * 60 * 60 * 1000 });
-             res.send('login sucesfull!');
+             res.send(user);
 
           }
 
