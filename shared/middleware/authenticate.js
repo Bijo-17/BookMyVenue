@@ -9,7 +9,7 @@ const  authenticate = async (req,res,next)=>{
          const {token} = req.cookies;
 
          if(!token){
-             throw new Error('please log in again');
+             return res.status(401).send('Please log in again');
           }
 
          const decodedData = await jwt.verify(token, process.env.JWT_SECRET);

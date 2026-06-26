@@ -2,6 +2,7 @@
 const validator = require('validator');
 const generateOtp = require('../util/otpGenerator');
 const bcrypt = require('bcrypt');
+const User = require('../models/user');
 
 const validateSignupData = (req) => {
 
@@ -33,7 +34,7 @@ const validateSignupData = (req) => {
 
 const validateProfileUpdate = (req) => {
 
-     const { firstName, lastName, phoneNumber } = req.body;
+     const { firstName, lastName, phoneNumber, location } = req.body;
 
      if (!firstName && !lastName && !email && !password && !phoneNumber) {
 
@@ -45,6 +46,8 @@ const validateProfileUpdate = (req) => {
 
      } else if (!validator.isMobilePhone(phoneNumber.toString(), 'en-IN')) {
           throw new Error("Enter a valid phone number");
+     } else if(location.length > 30){
+          throw new Error("Location is too long")
      }
 
 }
@@ -68,16 +71,15 @@ const validatePasswordUpdate = async (req) => {
 
      const { enteredPassword, newPassword, confirmPassword } = req.body
 
-     const user = req.user;
+     const user = await User.findById(req.user.userId);
 
       const isPasswordValid = await user.validatePassword(enteredPassword);
-      const isPasswordsame = await user.validatePassword(newPassword);
       
      if (!isPasswordValid) {
 
           throw new Error("Existing password is not correct");
 
-     } else if(isPasswordsame){
+     } else if(enteredPassword === newPassword){
 
           throw new Error("Enter a different password");
 
@@ -100,10 +102,10 @@ const validateOtp = async (otp,enteredOtp,otpExpiry)=>{
           throw new Error('Enter your otp');
       } else if(!otp){
           throw new Error('Otp not send try again');
-      } else  if(Date.now() > otpExpiry ){
-          throw new Error('OTP expired! Resend the OTP again');
-      } else if( otp !== enteredOtp){
+     } else if( otp !== enteredOtp){
           throw new Error('Otp is not valid');
+     } else  if( Date.now() > otpExpiry ){
+          throw new Error('OTP expired! Resend the OTP again');
       }
       
 }

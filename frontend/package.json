@@ -12,8 +12,10 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.12.0",
     "@tailwindcss/vite": "^4.3.1",
+    "@tanstack/react-router": "^1.170.16",
     "axios": "^1.18.1",
     "jsonwebtoken": "^9.0.3",
+    "lucide-react": "^1.21.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-redux": "^9.3.0",

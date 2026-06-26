@@ -41,15 +41,15 @@ const registerVenueOwner = async (req, res) => {
 
          if(response.data.success){
              await venueOwner.save();
-             res.send('successfully register as a Venue Owner');
+             res.json({success: true , message:'successfully register as a Venue Owner' });
          } else {
-             res.status(400).send('ERRORedd: '+response.message);
+             res.status(400).json({success:false , message:response.data.message});
          }
       
 
     } catch (error) {
 
-        res.status(400).send('ERROR Registering as venu owner: ' + error);
+        res.status(400).json(error.message);
 
     }
 }

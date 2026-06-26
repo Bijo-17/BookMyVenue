@@ -6,6 +6,11 @@ import Login from './components/Login/Login'
 import Signup from './components/Signup/Signup'
 import { Provider } from 'react-redux'
 import appStore from './utils/appStore'
+import Profile from './components/profile/profile'
+import Dashboard from './components/Dashboard/Dashboard'
+import Account from './components/Dashboard/Account'
+import Otp from './components/Otp/Otp'
+import VenueOwnerSignup from './components/Venues/VenueOwnerSignup'
 
 
 function App() {
@@ -19,7 +24,11 @@ function App() {
              <Route path="/" element={<Body/>}> 
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/signup" element= {<Signup/>} />
-                <Route path="/profile" element={<div>"This is a sample profile"</div>}/>
+                <Route path="/test" element={<div>TEST PAGE</div>} />
+                <Route path="/profile" element={<Dashboard/>} />
+                <Route path="/account" element={<Account/>} />
+                <Route path="/verify-otp" element={<Otp/>} /> 
+                <Route path="/venue_owner-registeration" element={<VenueOwnerSignup/>} />
              </Route>       
            </Routes>      
         </BrowserRouter>

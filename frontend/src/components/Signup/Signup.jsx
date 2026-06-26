@@ -1,8 +1,16 @@
 
 
+import axios from "axios"
 import { useState } from "react"
+import { BASE_URL } from "../../utils/constants"
+import { Link, useNavigate } from "react-router"
+import Loader from "../Loader/Loader"
 
 const Signup = ()=> {
+
+  const [loading, setLoading] = useState(false);
+   const [toast,setToast] = useState({ state: false, message: '' });
+
   const [values, setValues] = useState({
     firstName: "",
     lastName: "",
@@ -53,7 +61,9 @@ const Signup = ()=> {
     passwordValid &&
     confirmValid
 
-  const submitForm = (e) => {
+    const navigate = useNavigate();
+
+  const submitForm = async (e) => {
     e.preventDefault()
     setTouched({
       firstName: true,
@@ -64,8 +74,35 @@ const Signup = ()=> {
       confirmPassword: true,
     })
     if (!allValid) return
-    // handle real registration here
-    console.log("[v0] sign up", values)
+
+    try{ 
+          setLoading(true);
+    const res = await axios.post(BASE_URL+'/api/auth/signup',{
+        firstName: values.firstName, 
+        lastName : values.lastName,
+        email: values.email,
+        password: values.password,
+        phoneNumber: values.phone
+    } , { withCredentials: true });
+
+     if(res.data.success){
+        navigate('/verify-otp',{
+          state: {
+            tempUserId: res.data.tempUserId,
+            email:values.email
+          }
+        });
+     }
+
+
+    } catch(error){
+       setLoading(false);
+       setToast({ state : true, message : error.response.data });
+       setTimeout(()=>{
+           setToast({state : false, message:''});
+          },3000)
+       console.log("err:" +error.response.data);
+    }
   }
 
   const fieldWrapClass = (hasError) =>
@@ -76,7 +113,14 @@ const Signup = ()=> {
     }`
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-[#EBE2E0] px-4 py-10">
+
+    <> 
+         <Loader
+                show={loading}
+          text="Creating your account..."
+          />
+  
+    <div className="min-h-screen w-full flex items-center justify-center bg-[#EBE2E0] px-4 py-20">
       <form
         onSubmit={submitForm}
         noValidate
@@ -323,13 +367,21 @@ const Signup = ()=> {
           {/* Sign in link */}
           <p className="mt-6 text-center text-sm text-[#2D3436]/60">
             Already have an account?{" "}
-            <a href="#" className="font-bold text-[#990302] hover:underline">
+            <Link to="/login" className="font-bold text-[#990302] hover:underline">
               Sign in
-            </a>
+            </Link>
           </p>
         </div>
       </form>
     </div>
+
+     { toast.state && ( <div className="toast toast-top toast-center my-20">
+       <div className="alert alert-error" >
+         <span>{toast.message}</span> 
+       </div>
+   </div> ) }
+
+  </>
   )
 }
 

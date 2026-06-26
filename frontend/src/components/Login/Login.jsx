@@ -2,7 +2,7 @@
 
 import {useState} from "react"
 import axios from "axios"
-import { useNavigate } from "react-router"
+import { Link, useNavigate } from "react-router"
 import { BASE_URL } from "../../utils/constants"
 import { useDispatch } from "react-redux"
 import { addUser } from "../../utils/userSlice"
@@ -42,11 +42,11 @@ const Login = ()=> {
         } catch(err){
             console.log(err);
         }
-    console.log("[v0] sign in", { email, remember })
+    
   }
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-[#EBE2E0] px-4 py-10">
+    <div className="min-h-screen w-full flex items-center justify-center bg-[#EBE2E0] px-4 py-24">
       <form
         onSubmit={submitForm}
         noValidate
@@ -216,9 +216,9 @@ const Login = ()=> {
           {/* Register */}
           <p className="mt-6 text-center text-sm text-[#2D3436]/60">
             Don&apos;t have an account?{" "}
-            <a href="#" className="font-bold text-[#990302] hover:underline">
+            <Link to="/signup" className="font-bold text-[#990302] hover:underline">
               Register now
-            </a>
+            </Link>
           </p>
         </div>
       </form>

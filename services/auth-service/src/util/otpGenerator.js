@@ -44,8 +44,6 @@ async function sendVerificationEmail(email,otp){
 
     } catch (error) {
         throw new Error('ERROR occured in sending email: ' +error.message);
-        console.error("Error sending email",error);
-        return false;
     }
 }
 

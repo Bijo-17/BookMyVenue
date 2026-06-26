@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt');
 const getProfile = async (req,res)=>{
       try {
 
-        const user = await User.findById(req.user.userId).select('firstName lastName email phoneNumber');
+        const user = await User.findById(req.user.userId).select('firstName lastName email phoneNumber photoUrl location');
 
           res.send(user);
 
@@ -22,7 +22,7 @@ const editProfile =  async (req, res) => {
 
           const user = await User.findById(req.user.userId);
 
-          const Allowed_updates = [ 'firstName', 'lastName', 'phoneNumber'];
+          const Allowed_updates = [ 'firstName', 'lastName', 'phoneNumber', 'location'];
 
            let isUpdateAllowed = Object.keys(req.body).every(key=> Allowed_updates.includes(key));
 
@@ -36,7 +36,7 @@ const editProfile =  async (req, res) => {
 
           await user.save();
 
-          res.send('Profile updated successfully');
+          res.json({success:true , message: "Profile updated successfully" });
 
      } catch (error) {
           res.status(400).send("Unable to update profile: " + error.message);
@@ -69,7 +69,7 @@ const editPassword = async (req,res)=> {
           res.send("password updated sucessfully");
 
       } catch (error) {
-          res.status(400).send("Unbale to change the password: "+ error.message);
+          res.status(400).send(error.message);
       }
 
 }

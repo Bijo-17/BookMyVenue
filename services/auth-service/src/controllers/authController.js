@@ -22,6 +22,8 @@ const signupUser = async (req, res) => {
 
          const isOtpSent = await generateOtp(req,email);
 
+         if(isOtpSent){
+
            const hashPassword = await bcrypt.hash(password, 10);
 
           const tempUser = await PendingUser.create({
@@ -38,16 +40,17 @@ const signupUser = async (req, res) => {
            })
            
 
-           res.json({
+           res.json({ success: true,
                 message:'OTP Sent',
                 tempUserId:tempUser._id,
-                redirectUrl:'/loadOtpPage'
            })
-
+       } else {
+          throw new Error("Couldn't sent OTP try again later"); 
+       }
           
 
      } catch (error) {
-          res.send('Error in adding user: ' + error.message);
+          res.status(400).json(error.message);
      }
 }
 
@@ -97,19 +100,6 @@ const logout = async (req,res)=> {
 }
 
 
-const loadOtpPage = async (req,res)=> {
-     try {
-
-          
-            res.send('otp Conforming page lOaded...');
-            
-          
-     } catch (error) {
-          res.status(400).send('ERROR: '+error.message);
-          
-     }
-}
-
 const verifyOtp = async (req,res)=>{
      try {
           
@@ -120,7 +110,6 @@ const verifyOtp = async (req,res)=>{
            if (!pendingUser) {
                    throw new Error("Session Expired!");
                }
-
 
             await validateOtp(pendingUser.otp,otp,pendingUser.otpExpiry);
       
@@ -138,15 +127,45 @@ const verifyOtp = async (req,res)=>{
 
           await PendingUser.findByIdAndDelete(tempUserId);
 
-          res.send('User created sucessfully');
+          res.json({ success: true , message: 'User created sucessfully' });
        
           
      } catch (error) {
-          res.status(400).send('ERROR: '+error.message);          
+          res.status(400).json(error.message);          
      }
 }
 
+ const resendOtp = async (req,res)=>{
+     try {
+
+          const { tempUserId } = req.body;
+
+          const pendingUser = await PendingUser.findById(tempUserId);
+
+           if (!pendingUser) {
+                   throw new Error("Session Expired! Fill the details again");
+               }
+
+             const isOtpSent = await generateOtp(req,pendingUser.email);
+             
+             if(isOtpSent){
+       
+                    pendingUser.otp = req.otp;
+                    pendingUser.otpExpiry = req.otpExpiry;                   
+                    await pendingUser.save();
+
+                res.json({ success:true , message: 'OTP send successfully' });
+
+             } else {
+                res.json({ success:false, message: "Couldn't send OTP try again later "});
+             }
+          
+         } catch (error) {
+              res.status(400).json(error.message);
+         }
+ }
 
 
 
-module.exports = { signupUser , login, logout , loadOtpPage, verifyOtp }
+
+module.exports = { signupUser , login, logout , verifyOtp, resendOtp }

@@ -13,8 +13,8 @@ router.post('/signup', authController.signupUser);
 router.post('/login', authController.login);
 router.post('/logout',authController.logout);
 
-router.get('/verifyOtp',authController.loadOtpPage);
 router.post('/verifyOtp',authController.verifyOtp);
+router.post('/resendOtp', authController.resendOtp);
 
 
 module.exports = router;

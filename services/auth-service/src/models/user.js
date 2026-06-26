@@ -23,8 +23,8 @@ const userSchema = mongoose.Schema({
      role:      [{ type :    String , 
                    Enum:    ['user','admin','venuOwner'], 
                    default: 'user'
-                 }]
-
+                 }],
+     photoUrl:  { type:String }
 },
      { timestamps: true });
 
