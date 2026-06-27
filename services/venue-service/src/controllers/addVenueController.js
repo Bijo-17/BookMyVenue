@@ -7,9 +7,8 @@ const addVenue = async (req, res) => {
 
         const venueOnwer = await VenueOwner.findOne({userId:req.user.userId});
 
-
         if(!venueOnwer){
-            throw new Error('ERROR: first register as an Venue Owner And then try adding your venue');
+            return res.status(403).send('First register as an Venue Owner And then try adding your venue');
         }
 
         await validateVenueSignupData(req);
@@ -39,7 +38,7 @@ const addVenue = async (req, res) => {
 
 
         if(isVenueExist){
-             throw new Error("Venue name already exists");
+            return res.status(409).send("Venue name already exists");
         }
 
         await new Venue({
@@ -62,7 +61,7 @@ const addVenue = async (req, res) => {
         }).save();
 
         
-        res.send('venue added sucessfully , waiting for Approval');
+        res.status(201).send('venue added sucessfully , waiting for Approval');
 
     } catch (error) {
         res.status(400).send("ERROR in adding venue: "+ error.message);
@@ -79,9 +78,9 @@ const deleteVenue = async (req,res)=>{
         const venue = await Venue.findByIdAndUpdate(venueId,{isDeleted:true});
 
         if(venue){
-            res.send('Deleted sucessfully...');
+            res.status(204).send('Deleted sucessfully...');
         } else {
-            res.send('Error in deleting venue');
+            res.status(404).send('Error in deleting venue');
         }
         
     } catch (error) {
@@ -104,7 +103,7 @@ const viewVenue = async (req,res)=>{
 
         
     } catch (error) {
-        res.json({success:false , message: error.message});
+        res.status(400).json(error.message);
     }
 }
 

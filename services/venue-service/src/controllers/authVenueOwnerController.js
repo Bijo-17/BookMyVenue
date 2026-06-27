@@ -19,12 +19,12 @@ const registerVenueOwner = async (req, res) => {
       const existingVenueOwner = await VenueOwner.findOne({ businessEmail: businessEmail });
 
       if(existingVenueOwner){
-        return res.status(400).send('Email address already exists!');
+        return res.status(409).json('Email address already exists!');
       }
       
       const venueOwner =  await new VenueOwner({
 
-            userId: req.user.userId,
+            userId: req.user.userId,    
             organizationName,
             businessEmail,
             businessPhone,
@@ -43,7 +43,7 @@ const registerVenueOwner = async (req, res) => {
              await venueOwner.save();
              res.json({success: true , message:'successfully register as a Venue Owner' });
          } else {
-             res.status(400).json({success:false , message:response.data.message});
+             res.status(400).json(response.data.message);
          }
       
 

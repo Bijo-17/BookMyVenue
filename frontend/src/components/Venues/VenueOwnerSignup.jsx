@@ -3,7 +3,7 @@
 import axios from "axios"
 import { useMemo, useState } from "react"
 import { BASE_URL } from "../../utils/constants"
-
+import Notification from "../Notification"
 
 const Icon = {
   user: (p) => (
@@ -96,6 +96,12 @@ const Icon = {
       <path d="M12 4 3 20h18zM12 4v16" />
     </svg>
   ),
+  sparkles: (p) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles-icon lucide-sparkles">
+    <path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/><path d="M20 2v4"/>
+    <path d="M22 4h-4"/><circle cx="4" cy="20" r="2"/>
+  </svg>
+  )
 }
 
 /* Faint background decorations spread behind the card */
@@ -138,14 +144,14 @@ const VENUE_TYPES = [
 function Field({ icon: I, label, optional, error, children }) {
   return (
     <label className="form-control w-full">
-      <span className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-base-content">
+      <span className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-brand-accent">
         <I className="h-4 w-4 text-brand-secondary" />
         {label}
-        {optional ? <span className="font-normal text-base-content/45">(optional)</span> : null}
+        {optional ? <span className="font-normal text-brand-accent/45">(optional)</span> : null}
       </span>
       {children}
       {error ? (
-        <span className="mt-1.5 flex items-center gap-1 text-xs font-medium text-error">
+        <span className="mt-1.5 flex items-center gap-1 text-xs font-medium text-brand-secondary">
           <Icon.check className="h-3.5 w-3.5" />
           {error}
         </span>
@@ -155,9 +161,10 @@ function Field({ icon: I, label, optional, error, children }) {
 }
 
 const inputCls =
-  "input input-bordered h-12 w-full rounded-xl border-base-300 bg-base-100 text-base-content placeholder:text-base-content/40 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+  "input input-bordered h-12 w-full rounded-xl border-[#2d343624] bg-white text-brand-accent placeholder:text-brand-accent/60 focus:border-brand-accent focus:outline-none focus:shadow-[0_0_0_4px_#9903022e] focus:ring-0.5 focus:ring-brand-secondary"
 
   function VenueOwnerSignup() {
+
   const [form, setForm] = useState({
     owner: "",
     organization: "",
@@ -175,15 +182,20 @@ const inputCls =
   const [submitted, setSubmitted] = useState(false)
   const [done, setDone] = useState(false)
 
+  const [toast, setToast] = useState({ type : 'success' , message : ''});
+
   const set = (key) => (e) =>
     setForm((f) => ({ ...f, [key]: e.target.type === "checkbox" ? e.target.checked : e.target.value }))
 
   const errors = useMemo(() => {
     const e = {}
+    if (form.owner.trim().length < 3 || form.owner.length > 20 || !/^[A-Za-z\s]+$/.test(form.owner.trim())) e.owner = "Enter a valid name"
     if (!form.organization.trim()) e.organization = "Organization name is required"
     if (!/^\S+@\S+\.\S+$/.test(form.email)) e.email = "Enter a valid business email"
-    if (form.phone.replace(/\D/g, "").length < 8) e.phone = "Enter a valid business phone"
-    if (!form.gst.trim()) e.gst = "GST / Business ID is required"
+    if (!/^(?:\+91[- ]?)?[6-9]\d{9}$/.test(form.phone.trim())) e.phone = "Enter a valid phone number"
+    // if (!form.gst.trim()) e.gst = "GST / Business ID is required"
+    if(!form.city.trim()) e.city = 'Enter your city'
+    if(!form.venueType) e.venueType = 'Select your venue type'
     if (!form.status) e.status = "Select a status"
     if (form.description.trim().length < 20) e.description = "Description should be at least 20 characters"
     if (!form.agree) e.agree = "Please accept the Partner Terms to continue"
@@ -197,6 +209,7 @@ const inputCls =
  
         setSubmitted(true)
 
+   if (Object.keys(errors).length === 0) {
 
     try{ 
     const res = await axios.post( BASE_URL+'/api/venues/venueOwner/signup',
@@ -211,20 +224,38 @@ const inputCls =
 
       if(res.data.success){
         // redirect ot the venueOwner
-          if (Object.keys(errors).length === 0) {
-      setDone(true)
-      window.scrollTo({ top: 0, behavior: "smooth" })
-    }
+
+        setToast({type: 'success' , message: res.data.message || 'Success'});
+        setTimeout(()=> setToast({type:'', message: ''}),3000);
+       setDone(true)
+       window.scrollTo({ top: 0, behavior: "smooth" })
+    } 
    
-      }
+      
 
     } catch(error){
-        console.log(error);
+       if(error.response){ 
+        console.log(error.response.data);
+        setToast({ type: 'error' , message: error.response.data });
+      
+        setTimeout(()=>{
+           setToast({type:'' , message: ''}); 
+        },3000)
+       } else {
+        setToast({ type: 'error' , message: "Something went wrong!" });
+        setTimeout(()=>{
+           setToast({type: '' , message: ''});
+        },3000)
+        console.error("Something went wrong!"); 
+       }
+
     }
   }
 
+  }
+
   return (
-    <div className="relative min-h-screen overflow-hidden bg-brand-primary px-4 py-10 sm:py-16">
+    <div className="relative min-h-screen overflow-hidden bg-brand-primary px-4 py-20 sm:py-24">
       {/* Faint venue-themed background decorations */}
       <div aria-hidden className="pointer-events-none absolute inset-0 hidden md:block">
         {DECOR.map(({ C, size, rotate, ...pos }, i) => (
@@ -239,16 +270,18 @@ const inputCls =
       </div>
 
       <div className="relative mx-auto w-full max-w-3xl">
-        <div className="rounded-3xl bg-base-100 p-6 shadow-xl shadow-brand-accent/20 ring-1 ring-base-300/60 sm:p-10">
+        <div className="rounded-3xl bg-white p-6 shadow-xl shadow-brand-accent/22 ring-1 ring-brand-accent/4 sm:p-10">
           {done ? (
             <div className="flex flex-col items-center py-10 text-center">
               <span className="flex h-16 w-16 items-center justify-center rounded-full bg-success/10 text-success">
                 <Icon.check className="h-9 w-9" />
               </span>
-              <h2 className="mt-5 text-2xl font-bold text-base-content">Venue submitted for review</h2>
-              <p className="mt-2 max-w-sm text-sm text-base-content/60">
-                Thanks for partnering with BookMyVenue. Our team will verify your details and get back to you within
-                24-48 hours.
+              <h2 className="mt-5 text-2xl font-bold text-brand-secondary">Successfully! Registered as Venue Owner</h2>
+              <p className="mt-2 max-w-sm text-sm text-brand-accent/60 font-medium">
+                Thanks for partnering with BookMyVenue. Now you can add Your Venues and View Dashboard
+                
+                {/* Our team will verify your details and get back to you within
+                24-48 hours. */}
               </p>
               <button
                 type="button"
@@ -256,28 +289,30 @@ const inputCls =
                   setDone(false)
                   setSubmitted(false)
                 }}
-                className="btn btn-primary mt-6 rounded-xl"
+                className="btn bg-brand-secondary mt-6 rounded-xl"
               >
-                Register another venue
+                {/* Register another venue */}
+                View Dashboard
               </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} noValidate>
               {/* Header */}
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-brand-secondary">
-                <Icon.popper className="h-3.5 w-3.5" />
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-secondary/10 px-3 py-2 text-xs font-bold uppercase tracking-wider text-brand-secondary">
+                <Icon.sparkles className="h-3.5 w-3.5" />
                 Become a partner
               </span>
-              <h1 className="mt-4 font-serif text-4xl font-bold tracking-tight text-base-content sm:text-5xl">
-                Register as a <span className="italic text-brand-secondary">Venue Owner</span>
+              <h1 className="mt-4 font-serif text-2xl font-bold tracking-tight text-brand-accent sm:text-4xl">
+                Register as a <span className="italic bg-[linear-gradient(135deg,#990302_0%,#d4423f_60%,#2D3436_100%)] bg-clip-text text-transparent }">
+                       Venue Owner</span>
               </h1>
-              <p className="mt-2 max-w-md text-sm leading-relaxed text-base-content/60">
+              <p className="mt-2 max-w-md text-1sm leading-relaxed text-brand-accent/60">
                 List your space on BookMyVenue and reach thousands of customers planning their next celebration.
               </p>
 
               {/* Fields */}
               <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <Field icon={Icon.user} label="Owner / Contact name">
+                <Field icon={Icon.user} label="Owner / Contact name" error={showError("owner")}>
                   <input className={inputCls} placeholder="e.g. Aarav Sharma" value={form.owner} onChange={set("owner")} />
                 </Field>
                 <Field icon={Icon.building} label="Organization name" error={showError("organization")}>
@@ -305,9 +340,9 @@ const inputCls =
                     onChange={set("phone")}
                   />
                 </Field>
-                <Field icon={Icon.tag} label="Venue type">
-                  <select
-                    className={`select select-bordered h-12 w-full rounded-xl border-base-300 bg-base-100 font-normal text-base-content focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 ${
+                <Field icon={Icon.tag} label="Venue type" error={showError("venueType")}>
+                  <select     
+                    className={`select select-bordered h-12 w-full rounded-xl border-brand-accent/14 bg-white font-normal text-brand-accent/60 focus:border-brand-accent focus:outline-none focus:shadow-[0_0_0_4px_#9903022e] focus:ring-0.5 focus:ring-brand-secondary ${
                       form.venueType ? "" : "text-base-content/40"
                     }`}
                     value={form.venueType}
@@ -323,7 +358,7 @@ const inputCls =
                     ))}
                   </select>
                 </Field>
-                <Field icon={Icon.pin} label="City">
+                <Field icon={Icon.pin} label="City" error={showError("city")}>
                   <input className={inputCls} placeholder="e.g. Mumbai" value={form.city} onChange={set("city")} />
                 </Field>
                 <div className="sm:col-span-2">
@@ -344,7 +379,7 @@ const inputCls =
                     onChange={set("website")}
                   />
                 </Field>
-                <Field icon={Icon.card} label="GST / Business ID" error={showError("gst")}>
+                <Field icon={Icon.card} label="GST / Business ID" optional error={showError("gst")}>
                   <input
                     className={inputCls}
                     placeholder="22AAAAA0000A1Z5"
@@ -356,7 +391,7 @@ const inputCls =
 
               {/* Status pills */}
               <div className="mt-6">
-                <span className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-base-content">
+                <span className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-brand-accent">
                   <Icon.check className="h-4 w-4 text-brand-secondary" />
                   Status
                 </span>
@@ -368,10 +403,10 @@ const inputCls =
                         key={s.value}
                         type="button"
                         onClick={() => setForm((f) => ({ ...f, status: s.value }))}
-                        className={`rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
+                        className={`rounded-full border px-4 py-2 text-sm font-semibold transition-colors cursor-pointer ${
                           selected
                             ? "border-brand-primary bg-brand-secondary text-brand-primary-content shadow-lg"
-                            : "border-base-300 bg-base-100 text-base-content/70 hover:border-primary/40 hover:text-brand-secondary"
+                            : "border-brand-accent/18 bg-white text-brand-accent hover:border-brand-accent/28 hover:text-brand-secondary"
                         }`}
                       >
                         {s.label}
@@ -384,7 +419,7 @@ const inputCls =
               {/* Description */}
               <div className="mt-6">
                 <div className="mb-1.5 flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 text-sm font-semibold text-base-content">
+                  <span className="flex items-center gap-1.5 text-sm font-semibold text-brand-accent">
                     <Icon.doc className="h-4 w-4 text-brand-secondary" />
                     Description
                   </span>
@@ -396,12 +431,12 @@ const inputCls =
                   value={form.description}
                   onChange={set("description")}
                   placeholder="Tell customers what makes your venue special — capacity, ambience, amenities, parking, in-house catering, etc."
-                  className={`textarea textarea-bordered w-full rounded-xl border-base-300 bg-base-100 text-base-content placeholder:text-base-content/40 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 ${
+                  className={`textarea textarea-bordered w-full rounded-xl border-brand-accent/20 bg-white text-brand-accent placeholder:text-brand-accent/40 focus:border-brand-accent focus:outline-none focus:shadow-[0_0_0_4px_#9903022e] focus:ring-0.5 focus:ring-brand-secondary ${
                     showError("description") ? "border-error focus:border-error focus:ring-error/20" : ""
                   }`}
                 />
                 {showError("description") ? (
-                  <span className="mt-1.5 flex items-center gap-1 text-xs font-medium text-error">
+                  <span className="mt-1.5 flex items-center gap-1 text-xs font-medium text-brand-secondary">
                     <Icon.check className="h-3.5 w-3.5" />
                     {errors.description}
                   </span>
@@ -417,7 +452,7 @@ const inputCls =
                     onChange={set("agree")}
                     className="checkbox checkbox-sm mt-0.5 border-base-300 [--chkfg:white] checked:border-primary checked:bg-brand-secondary"
                   />
-                  <span>
+                  <span className="text-brand-accent">
                     I confirm the details are accurate and I agree to BookMyVenue's{" "}
                     <a className="font-semibold text-brand-secondary hover:underline" href="#terms">
                       Partner Terms
@@ -444,10 +479,10 @@ const inputCls =
                 className="btn bg-brand-secondary mt-7 h-14 w-full rounded-2xl text-base font-bold shadow-lg shadow-brand-accent/20 transition-transform hover:-translate-y-0.5"
               >
                 Register my venue
-                <Icon.sparkle className="ml-1 h-5 w-5" />
+                <Icon.sparkles className="ml-1 h-5 w-5" />
               </button>
 
-              <p className="mt-5 text-center text-sm text-base-content/60">
+              <p className="mt-5 text-center text-sm text-brand-accent/50">
                 Already a partner?{" "}
                 <a className="font-bold text-brand-secondary hover:underline" href="#signin">
                   Sign in
@@ -457,6 +492,7 @@ const inputCls =
           )}
         </div>
       </div>
+               <Notification message={toast.message} type={toast.type} />
     </div>
   )
 }

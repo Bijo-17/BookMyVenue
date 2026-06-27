@@ -6,6 +6,8 @@ const venuOwnerSchema = mongoose.Schema({
 
    userId           :  {  type : mongoose.Schema.Types.ObjectId , ref: 'User' , required: true},
 
+   ownerName        : { type: String , minLength:3, maxLength: 30},
+
    organizationName :  {
                           type: String,
                           maxLength : 100

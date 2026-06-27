@@ -28,7 +28,7 @@ const Signup = ()=> {
   const blur = (key) => () => setTouched((t) => ({ ...t, [key]: true }))
 
   // Validators
-  const firstNameValid = values.firstName.trim().length >= 2
+  const firstNameValid = values.firstName.trim().length >= 3
   const lastNameValid = values.lastName.trim().length >= 2
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)
   // Indian phone: optional +91, starts 6-9, 10 digits total
@@ -41,7 +41,7 @@ const Signup = ()=> {
     values.confirmPassword === values.password
 
   const errors = {
-    firstName: touched.firstName && !firstNameValid && "Enter your first name (min 2 characters)",
+    firstName: touched.firstName && !firstNameValid && "Enter your first name (min 3 characters)",
     lastName: touched.lastName && !lastNameValid && "Enter your last name (min 2 characters)",
     email: touched.email && !emailValid && "Enter a valid email address",
     phone: touched.phone && !phoneValid && "Enter a valid phone number",
@@ -120,7 +120,7 @@ const Signup = ()=> {
           text="Creating your account..."
           />
   
-    <div className="min-h-screen w-full flex items-center justify-center bg-[#EBE2E0] px-4 py-20">
+    <div className="min-h-screen w-full flex items-center justify-center bg-brand-primary px-4 py-20">
       <form
         onSubmit={submitForm}
         noValidate
@@ -129,17 +129,17 @@ const Signup = ()=> {
         <div className="card-body p-7 sm:p-9">
           {/* Brand */}
           <div className="flex items-center gap-3 mb-6">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#990302] text-white text-xs font-bold tracking-tight">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-secondary text-white text-xs font-bold tracking-tight">
               BMV
             </div>
-            <span className="text-lg font-bold text-[#2D3436]">
-              Book<span className="text-[#990302]">My</span>Venue
+            <span className="text-lg font-bold text-brand-accent">
+              Book<span className="text-brand-secondary">My</span>Venue
             </span>
           </div>
 
           {/* Heading */}
-          <h2 className="text-3xl font-bold text-[#2D3436]">Create account</h2>
-          <p className="mt-1 text-sm text-[#2D3436]/60">
+          <h2 className="text-3xl font-bold text-brand-accent">Create account</h2>
+          <p className="mt-1 text-sm text-brand-accent/60">
             Sign up to start booking your perfect venue.
           </p>
 
@@ -147,7 +147,7 @@ const Signup = ()=> {
           <button
             type="button"
             onClick={() => console.log("[v0] sign up with google")}
-            className="btn mt-6 h-12 min-h-12 w-full rounded-xl border border-[#2D3436]/15 bg-white font-semibold text-[#2D3436] normal-case shadow-none hover:bg-[#EBE2E0]/40 hover:border-[#2D3436]/25"
+            className="btn mt-6 h-12 min-h-12 w-full rounded-xl border border-brand-accent/15 bg-white font-semibold text-brand-accent normal-case shadow-none hover:bg-brand-primary/40 hover:border-brand-accent/25"
           >
             <svg className="h-5 w-5" viewBox="0 0 48 48" aria-hidden="true">
               <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8a12 12 0 1 1 0-24c3 0 5.8 1.1 7.9 3l5.7-5.7A20 20 0 1 0 24 44a20 20 0 0 0 19.6-23.5z" />
@@ -160,19 +160,19 @@ const Signup = ()=> {
 
           {/* Divider */}
           <div className="my-6 flex items-center gap-4">
-            <div className="h-px flex-1 bg-[#2D3436]/12" />
-            <span className="text-xs font-medium text-[#2D3436]/45">OR</span>
-            <div className="h-px flex-1 bg-[#2D3436]/12" />
+            <div className="h-px flex-1 bg-brand-accent/12" />
+            <span className="text-xs font-medium text-brand-accent/45">OR</span>
+            <div className="h-px flex-1 bg-brand-accent/12" />
           </div>
 
           {/* First + Last name */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <fieldset className="fieldset p-0">
-              <label htmlFor="firstName" className="mb-1.5 block text-sm font-semibold text-[#2D3436]">
+              <label htmlFor="firstName" className="mb-1.5 block text-sm font-semibold text-brand-accent">
                 First name
               </label>
               <div className={fieldWrapClass(!!errors.firstName)}>
-                <svg className="h-5 w-5 shrink-0 text-[#2D3436]/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <svg className="h-5 w-5 shrink-0 text-brand-accent/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                   <circle cx="12" cy="8" r="4" />
                   <path d="M4 21a8 8 0 0 1 16 0" />
                 </svg>
@@ -184,20 +184,20 @@ const Signup = ()=> {
                   aria-invalid={!!errors.firstName}
                   onChange={setField("firstName")}
                   onBlur={blur("firstName")}
-                  className="h-12 w-full bg-transparent text-[#2D3436] placeholder:text-[#2D3436]/35 focus:outline-none"
+                  className="h-12 w-full bg-transparent text-brand-accent placeholder:text-brand-accent/35 focus:outline-none"
                 />
               </div>
               {errors.firstName && (
-                <span className="mt-1.5 text-sm font-semibold text-[#990302]">{errors.firstName}</span>
+                <span className="mt-1.5 text-sm font-semibold text-brand-secondary">{errors.firstName}</span>
               )}
             </fieldset>
 
             <fieldset className="fieldset p-0">
-              <label htmlFor="lastName" className="mb-1.5 block text-sm font-semibold text-[#2D3436]">
+              <label htmlFor="lastName" className="mb-1.5 block text-sm font-semibold text-brand-accent">
                 Last name
               </label>
               <div className={fieldWrapClass(!!errors.lastName)}>
-                <svg className="h-5 w-5 shrink-0 text-[#2D3436]/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <svg className="h-5 w-5 shrink-0 text-brand-accent/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                   <circle cx="12" cy="8" r="4" />
                   <path d="M4 21a8 8 0 0 1 16 0" />
                 </svg>
@@ -209,22 +209,22 @@ const Signup = ()=> {
                   aria-invalid={!!errors.lastName}
                   onChange={setField("lastName")}
                   onBlur={blur("lastName")}
-                  className="h-12 w-full bg-transparent text-[#2D3436] placeholder:text-[#2D3436]/35 focus:outline-none"
+                  className="h-12 w-full bg-transparent text-brand-accent placeholder:text-brand-accent/35 focus:outline-none"
                 />
               </div>
               {errors.lastName && (
-                <span className="mt-1.5 text-sm font-semibold text-[#990302]">{errors.lastName}</span>
+                <span className="mt-1.5 text-sm font-semibold text-brand-secondary">{errors.lastName}</span>
               )}
             </fieldset>
           </div>
 
           {/* Email */}
           <fieldset className="fieldset mt-4 p-0">
-            <label htmlFor="email" className="mb-1.5 block text-sm font-semibold text-[#2D3436]">
+            <label htmlFor="email" className="mb-1.5 block text-sm font-semibold text-brand-accent">
               Email
             </label>
             <div className={fieldWrapClass(!!errors.email)}>
-              <svg className="h-5 w-5 shrink-0 text-[#2D3436]/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <svg className="h-5 w-5 shrink-0 text-brand-accent/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <rect x="3" y="5" width="18" height="14" rx="2" />
                 <path d="m3 7 9 6 9-6" />
               </svg>
@@ -236,24 +236,24 @@ const Signup = ()=> {
                 aria-invalid={!!errors.email}
                 onChange={setField("email")}
                 onBlur={blur("email")}
-                className="h-12 w-full bg-transparent text-[#2D3436] placeholder:text-[#2D3436]/35 focus:outline-none"
+                className="h-12 w-full bg-transparent text-brand-accent placeholder:text-brand-accent/35 focus:outline-none"
               />
             </div>
             {errors.email && (
-              <span className="mt-1.5 text-sm font-semibold text-[#990302]">{errors.email}</span>
+              <span className="mt-1.5 text-sm font-semibold text-brand-secondary">{errors.email}</span>
             )}
           </fieldset>
 
           {/* Phone */}
           <fieldset className="fieldset mt-4 p-0">
-            <label htmlFor="phone" className="mb-1.5 block text-sm font-semibold text-[#2D3436]">
+            <label htmlFor="phone" className="mb-1.5 block text-sm font-semibold text-brand-accent">
               Phone number
             </label>
             <div className={fieldWrapClass(!!errors.phone)}>
-              <svg className="h-5 w-5 shrink-0 text-[#2D3436]/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <svg className="h-5 w-5 shrink-0 text-brand-accent/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.5 2.8.6a2 2 0 0 1 1.7 2z" />
               </svg>
-              <span className="select-none text-sm font-medium text-[#2D3436]/50">+91</span>
+              <span className="select-none text-sm font-medium text-brand-accent/50">+91</span>
               <input
                 id="phone"
                 type="tel"
@@ -262,21 +262,21 @@ const Signup = ()=> {
                 aria-invalid={!!errors.phone}
                 onChange={setField("phone")}
                 onBlur={blur("phone")}
-                className="h-12 w-full bg-transparent text-[#2D3436] placeholder:text-[#2D3436]/35 focus:outline-none"
+                className="h-12 w-full bg-transparent text-brand-accent placeholder:text-brand-accent/35 focus:outline-none"
               />
             </div>
             {errors.phone && (
-              <span className="mt-1.5 text-sm font-semibold text-[#990302]">{errors.phone}</span>
+              <span className="mt-1.5 text-sm font-semibold text-brand-secondary">{errors.phone}</span>
             )}
           </fieldset>
 
           {/* Password */}
           <fieldset className="fieldset mt-4 p-0">
-            <label htmlFor="password" className="mb-1.5 block text-sm font-semibold text-[#2D3436]">
+            <label htmlFor="password" className="mb-1.5 block text-sm font-semibold text-brand-accent">
               Password
             </label>
             <div className={fieldWrapClass(!!errors.password)}>
-              <svg className="h-5 w-5 shrink-0 text-[#2D3436]/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <svg className="h-5 w-5 shrink-0 text-brand-accent/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <rect x="4" y="11" width="16" height="10" rx="2" />
                 <path d="M8 11V7a4 4 0 0 1 8 0v4" />
               </svg>
@@ -288,13 +288,13 @@ const Signup = ()=> {
                 aria-invalid={!!errors.password}
                 onChange={setField("password")}
                 onBlur={blur("password")}
-                className="h-12 w-full bg-transparent text-[#2D3436] placeholder:text-[#2D3436]/35 focus:outline-none"
+                className="h-12 w-full bg-transparent text-brand-accent placeholder:text-brand-accent/35 focus:outline-none"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((s) => !s)}
                 aria-label={showPassword ? "Hide password" : "Show password"}
-                className="shrink-0 text-[#2D3436]/45 hover:text-[#2D3436]"
+                className="shrink-0 text-brand-accent/45 hover:text-brand-accent"
               >
                 {showPassword ? (
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -309,17 +309,17 @@ const Signup = ()=> {
               </button>
             </div>
             {errors.password && (
-              <span className="mt-1.5 text-sm font-semibold text-[#990302]">{errors.password}</span>
+              <span className="mt-1.5 text-sm font-semibold text-brand-secondary">{errors.password}</span>
             )}
           </fieldset>
 
           {/* Confirm password */}
           <fieldset className="fieldset mt-4 p-0">
-            <label htmlFor="confirmPassword" className="mb-1.5 block text-sm font-semibold text-[#2D3436]">
+            <label htmlFor="confirmPassword" className="mb-1.5 block text-sm font-semibold text-brand-accent">
               Confirm password
             </label>
             <div className={fieldWrapClass(!!errors.confirmPassword)}>
-              <svg className="h-5 w-5 shrink-0 text-[#2D3436]/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <svg className="h-5 w-5 shrink-0 text-brand-accent/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <rect x="4" y="11" width="16" height="10" rx="2" />
                 <path d="M8 11V7a4 4 0 0 1 8 0v4" />
               </svg>
@@ -331,13 +331,13 @@ const Signup = ()=> {
                 aria-invalid={!!errors.confirmPassword}
                 onChange={setField("confirmPassword")}
                 onBlur={blur("confirmPassword")}
-                className="h-12 w-full bg-transparent text-[#2D3436] placeholder:text-[#2D3436]/35 focus:outline-none"
+                className="h-12 w-full bg-transparent text-brand-accent placeholder:text-brand-accent/35 focus:outline-none"
               />
               <button
                 type="button"
                 onClick={() => setShowConfirm((s) => !s)}
                 aria-label={showConfirm ? "Hide password" : "Show password"}
-                className="shrink-0 text-[#2D3436]/45 hover:text-[#2D3436]"
+                className="shrink-0 text-brand-accent/45 hover:text-brand-accent"
               >
                 {showConfirm ? (
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -352,22 +352,22 @@ const Signup = ()=> {
               </button>
             </div>
             {errors.confirmPassword && (
-              <span className="mt-1.5 text-sm font-semibold text-[#990302]">{errors.confirmPassword}</span>
+              <span className="mt-1.5 text-sm font-semibold text-brand-secondary">{errors.confirmPassword}</span>
             )}
           </fieldset>
 
           {/* Submit */}
           <button
             type="submit"
-            className="btn mt-6 h-12 min-h-12 w-full rounded-xl border-none bg-[#990302] text-base font-semibold text-white normal-case shadow-none hover:bg-[#7d0202]"
+            className="btn mt-6 h-12 min-h-12 w-full rounded-xl border-none bg-brand-secondary text-base font-semibold text-white normal-case shadow-none hover:bg-[#7d0202]"
           >
             Create account
           </button>
 
           {/* Sign in link */}
-          <p className="mt-6 text-center text-sm text-[#2D3436]/60">
+          <p className="mt-6 text-center text-sm text-brand-accent/60">
             Already have an account?{" "}
-            <Link to="/login" className="font-bold text-[#990302] hover:underline">
+            <Link to="/login" className="font-bold text-brand-secondary hover:underline">
               Sign in
             </Link>
           </p>
