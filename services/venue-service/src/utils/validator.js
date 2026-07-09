@@ -25,7 +25,7 @@ const validateSignup = (req)=>{
 
 }
 
-const validateVenueSignupData = (req)=>{
+const validateVenueData = (req)=>{
 
      const {
              venueName,
@@ -44,47 +44,35 @@ const validateVenueSignupData = (req)=>{
              facilities,
              idealFor,           
                               }  = req.body;
-console.log(req.body ,  !venueName,
-             !venueType,
-             !description,
-             !address,
-             !venuePhone,
-             !city,
-             !state,
-             !country,
-             !pincode,
-        
-             !pricePerDay,
-             !capacity,
-             !facilities,
-             !idealFor, )
+
        
-      if( !venueName || !venueType || !description ||
-          !address || !venuePhone || !city || !state ||
-          !country || !pincode || !pricePerDay || 
-          !capacity || !facilities ||!idealFor
+      if( !venueName.trim() || !venueType || !description.trim() ||
+          !address.trim() || !venuePhone.trim() || !city.trim() || !pincode.trim() || !pricePerDay.trim() || 
+          !capacity.trim() || !JSON.parse(facilities).length || !JSON.parse(idealFor).length
        ){
            throw new Error('Fill all the required fields');
        } else if(!validator.isMobilePhone(venuePhone.toString().trim(), 'en-IN')){
         throw new Error("Enter a valid phone number");
-      }  else if(pincode.length !== 7){
+      }  else if(pincode.length !== 6){
          throw new Error("Enter a valid pincode");
       }  else if(pricePerDay < 0) {
          throw new Error("Enter a valid price");
       }  else if(capacity < 0){
          throw new Error("Enter a valid capacity");
-      } else if (pricePerHour && pricePerDay < pricePerHour){
-         throw new Error("Price per Day should not be lesser than price per Hour");
-      } else if (facilities.length > 50){
+      } else if (pricePerHour && Number(pricePerDay) <= Number(pricePerHour)){
+         throw new Error("Price per Day should be greater than price per Hour");
+      } else if (JSON.parse(facilities).length > 30){
          throw new Error("Facilities limit reached");
-      } else if(idealFor.length > 50){
+      } else if(JSON.parse(idealFor).length > 30){
          throw new Error("ideal for limit reached");
+      } else if(Number(capacity) < 5 ) {
+         throw new Error("Minimum capacity 5 is required");
       }
 
 
 }
 
 
-module.exports = { validateSignup , validateVenueSignupData }
+module.exports = { validateSignup , validateVenueData }
 
 

@@ -11,7 +11,9 @@ import Dashboard from './components/Dashboard/Dashboard'
 import Account from './components/Dashboard/Account'
 import Otp from './components/Otp/Otp'
 import VenueOwnerSignup from './components/Venues/VenueOwnerSignup'
-
+import AddVenue from './components/Venues/addVenue'
+import VenueOwnerDashboard from './components/VenueOwnerDashboard/Dashboard'
+import Toast from './components/Notification'
 
 function App() {
   
@@ -20,6 +22,7 @@ function App() {
     <>
        <Provider store={appStore}>
         <BrowserRouter basename='/'> 
+           <Toast/>
            <Routes>          
              <Route path="/" element={<Body/>}> 
                 <Route path="/login" element={<Login/>}/>
@@ -29,6 +32,8 @@ function App() {
                 <Route path="/account" element={<Account/>} />
                 <Route path="/verify-otp" element={<Otp/>} /> 
                 <Route path="/venue_owner-registeration" element={<VenueOwnerSignup/>} />
+                <Route path="/add-venue" element={<AddVenue/>} />
+                <Route path='venue-owner-dashboard' element={<VenueOwnerDashboard/>} />
              </Route>       
            </Routes>      
         </BrowserRouter>

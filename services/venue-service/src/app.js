@@ -9,11 +9,13 @@ const venueOwnerAuthRoute = require('./routes/venueOwnerAuthRoutes');
 const addVenueRoute = require('./routes/addVenuRoutes');
 const editVenueRoute = require('./routes/editVenuRoutes')
 const getVenueRoute = require('./routes/getVenuRoutes');
-
+const path = require('path')
  
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+
+app.use("/uploads",express.static(path.resolve("uploads")));
 
 // app.use("/api/auth/profile",profileRoute);   
 // app.use("/api/auth",authRoute);

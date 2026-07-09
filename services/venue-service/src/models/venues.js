@@ -44,21 +44,25 @@ const venueSchema = mongoose.Schema({
      venuePhone:{
          type: Number,
          minLength:10,
-         maxLength:10
+         maxLength:10,
+         required: true
      },
     city: {
         type: String,
-        maxLength: 50
+        maxLength: 50,
+       
     },
 
     state: {
         type: String,
-        maxLength: 50
+        maxLength: 50,
+        default:'Kerala'
     },
 
     country: {
         type: String,
-        maxLength: 50
+        maxLength: 50,
+        default: 'India'
     },
 
     pincode: {
@@ -78,7 +82,8 @@ const venueSchema = mongoose.Schema({
 
      pricePerDay: {
         type: Number,
-        maxLength : 10
+        maxLength : 10,
+        
      },
 
     capacity: {
@@ -112,7 +117,16 @@ const venueSchema = mongoose.Schema({
                 ]        
      }],
 
-    images: [{ type: String }],
+    images: [{ 
+                url: { type: String, required: true} ,
+                filename: { type:String, required: true},
+                isPrimary : { type: Boolean , default: false},           
+            }],
+
+    rating:{
+       type: Number,
+       maxLength:15
+    },
 
     averageRating: {
         type: Number,
@@ -142,6 +156,15 @@ const venueSchema = mongoose.Schema({
     isApproved: {
         type:Boolean,
         default: false
+    },
+    
+    isAvailable: {
+        type:Boolean,
+        default:true
+    },
+    bookings: {
+        type:Number,
+        default:0
     }
 
 },

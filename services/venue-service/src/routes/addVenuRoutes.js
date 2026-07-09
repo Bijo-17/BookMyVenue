@@ -6,9 +6,16 @@ const authenticate = require('../../../../shared/middleware/authenticate');
 const authorize = require('../../../../shared/middleware/authorize');
 const venuContoller = require('../controllers/addVenueController');
 
-router.post('/addVenue',authenticate,authorize(ROLES.VENUE_OWNER), venuContoller.addVenue);
-router.post('/deleteVenue/:venueId',authenticate,authorize(ROLES.VENUE_OWNER), venuContoller.deleteVenue);
+const upload = require('../config/multer');
+const venues = require('../models/venues');
+
+router.post('/addVenue',upload.array("photos",10),authenticate,authorize(ROLES.VENUE_OWNER), venuContoller.addVenue);
+router.delete('/deleteVenue/:venueId',authenticate,authorize(ROLES.VENUE_OWNER), venuContoller.deleteVenue);
 
 router.get('/viewVenue',authenticate,authorize(ROLES.VENUE_OWNER), venuContoller.viewVenue);
 
+router.put('/editVenue/:venueId',upload.array("newPhotos",10),venuContoller.editVenue);
+
+
 module.exports = router;
+

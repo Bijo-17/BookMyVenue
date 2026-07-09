@@ -18,6 +18,16 @@ app.use(cors({
      credentials:true
 }));
 
+// static file
+app.use(
+    "/uploads",
+    createProxyMiddleware({
+        target: process.env.VENUE_SERVICE,
+        changeOrigin: true,
+        pathRewrite: (path) => "/uploads" + path,
+    })
+);
+
 // Auth service
 
  app.use(
